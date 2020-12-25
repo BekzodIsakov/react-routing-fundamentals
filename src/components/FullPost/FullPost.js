@@ -12,16 +12,27 @@ class FullPost extends Component {
     if (this.props.id) {
       if (
         !this.state.loadedPost ||
-        (!this.state.loadedPost && this.state.loadedPost.id !== this.props.id)
+        (this.state.loadedPost && this.state.loadedPost.id !== this.props.id)
       ) {
         axios
           .get('https://jsonplaceholder.typicode.com/posts/' + this.props.id)
           .then((response) => {
-            this.setState({ loadedPost: response });
+            this.setState({ loadedPost: response.data });
           });
       }
     }
   }
+
+  deletePost = () => {
+    axios
+      .delete('https://jsonplaceholder.typicode.com/posts/' + this.props.id)
+      .then((res) => {
+        console.log(res),
+          axios
+            .get('https://jsonplaceholder.typicode.com/posts')
+            .then((res) => console.log(res));
+      });
+  };
 
   render() {
     let post = <p style={{ textAlign: 'center' }}>Please select a post!</p>;
@@ -29,7 +40,17 @@ class FullPost extends Component {
       post = <p style={{ textAlign: 'center' }}>Loading...</p>;
     }
     if (this.state.loadedPost) {
-      post = <p style={{ textAlign: 'center' }}>Component's been uploaded</p>;
+      post = (
+        <div className='FullPost'>
+          <h1>{this.state.loadedPost.title}</h1>
+          <p>{this.state.loadedPost.body}</p>
+          <div className='Edit'>
+            <button onClick={this.deletePost} className='Delete'>
+              Delete
+            </button>
+          </div>
+        </div>
+      );
     }
 
     return post;
