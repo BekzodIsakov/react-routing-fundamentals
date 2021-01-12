@@ -1,7 +1,19 @@
-.Posts {
-    display: flex;
-    flex-flow: row wrap;
-    justify-content: center;
-    width: 80%;
-    margin: auto;
+.Blog ul {
+  text-align: center;
+}
+
+.Blog li {
+  display: inline-block;
+  padding: 0 10px;
+}
+
+.Blog a {
+  text-decoration: none;
+  color: rgb(219, 125, 62);
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.Blog a.active {
+  color: rgb(18, 119, 80);
 }

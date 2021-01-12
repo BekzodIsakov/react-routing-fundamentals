@@ -1,53 +1,49 @@
 import React, { Component } from 'react';
-import axios from 'axios';
+import { Route, NavLink, Switch, Redirect } from 'react-router-dom';
 
-import Post from '../../components/Post/Post';
-import FullPost from '../../components/FullPost/FullPost';
-import NewPost from '../../components/NewPost/NewPost';
+import Posts from '../Posts/Posts';
+import FullPost from '../FullPost/FullPost';
+import NewPost from '../NewPost/NewPost';
 import './Blog.css';
 
 class Blog extends Component {
   state = {
-    posts: [],
-    selectedPostId: null,
+    auth: false,
   };
 
-  componentDidMount() {
-    axios.get('https://jsonplaceholder.typicode.com/posts').then((response) => {
-      const posts = response.data.slice(0, 4);
-      const updatedPosts = posts.map((post) => ({
-        ...post,
-        author: 'Max',
-      }));
-      this.setState({
-        posts: updatedPosts,
-      });
-    });
-  }
-
-  selectPost(id) {
-    this.setState({ selectedPostId: id });
-  }
-
   render() {
-    const posts = this.state.posts.map((post) => (
-      <Post
-        key={post.id}
-        title={post.title}
-        author={post.author}
-        selectPost={() => this.selectPost(post.id)}
-      />
-    ));
-
     return (
-      <div>
-        <section className='Posts'>{posts}</section>
-        <section>
-          <FullPost id={this.state.selectedPostId} />
-        </section>
-        <section>
-          <NewPost />
-        </section>
+      <div className='Blog'>
+        <header>
+          <nav>
+            <ul>
+              <li>
+                <NavLink to='/posts'>Posts</NavLink>
+              </li>
+              <li>
+                <NavLink
+                  to={{
+                    pathname: '/new-post',
+                    hash: '#here',
+                  }}
+                  {...this.props}
+                >
+                  New post
+                </NavLink>
+              </li>
+            </ul>
+          </nav>
+        </header>
+        <Switch>
+          {this.state.auth ? (
+            <Route path='new-post' component={NewPost} />
+          ) : null}
+          <Route render={() => <h1>Not Found</h1>} />
+          {/*to catch unknown routes*/}
+          <Route path='/posts' component={Posts} />
+          {/*this doesn't work due to above route*/}
+          <Redirect from='/' to='/posts' />
+        </Switch>
       </div>
     );
   }
